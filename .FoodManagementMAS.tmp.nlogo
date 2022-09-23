@@ -52,6 +52,7 @@ end
 to draw-highway
   gis:set-drawing-color blue
   gis:draw highway-dataset 1
+  gis:width-of 1
 end
 
 
