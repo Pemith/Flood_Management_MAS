@@ -40,22 +40,48 @@ to setup
                                                 (gis:envelope-of natural-dataset)
                                                 (gis:envelope-of place-dataset)
                                                 (gis:envelope-of shop-dataset))
+
+  ; Draw the shapes of the places
+  draw-building
+  draw-highway
+  draw-landUse
+  draw-natural
+  draw-place
+  draw-shop
+
   reset-ticks
 end
 
-; Draw points for each city on the drawing layer
+; Draw layers for each city on the drawing layer
 to draw-building
-  gis:set-drawing-color red
+  gis:set-drawing-color 135
   gis:draw building-dataset 1
 end
 
 to draw-highway
-  gis:set-drawing-color blue
+  gis:set-drawing-color 15
   gis:draw highway-dataset 1
 end
 
+to draw-landUse
+  gis:set-drawing-color 65
+  gis:draw landUse-dataset 1
+end
 
+to draw-natural
+  gis:set-drawing-color 95
+  gis:draw natural-dataset 1
+end
 
+to draw-place
+  gis:set-drawing-color 45
+  gis:draw place-dataset 1
+end
+
+to draw-shop
+  gis:set-drawing-color 25
+  gis:draw shop-dataset 1
+end
 
 
 ;to setup-gis
@@ -77,13 +103,13 @@ end
 ;end
 @#$#@#$#@
 GRAPHICS-WINDOW
-325
-10
-890
-576
+284
+20
+676
+413
 -1
 -1
-16.9
+11.64
 1
 10
 1
@@ -110,40 +136,6 @@ BUTTON
 108
 setup
 setup
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
-BUTTON
-54
-124
-159
-157
-draw-building
-draw-building
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
-BUTTON
-57
-178
-167
-212
-draw-highway
-draw-highway
 NIL
 1
 T
