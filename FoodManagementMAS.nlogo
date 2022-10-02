@@ -49,6 +49,8 @@ to setup
   draw-place
   draw-shop
 
+  set-patch-size 15
+
   reset-ticks
 end
 
@@ -105,11 +107,11 @@ end
 GRAPHICS-WINDOW
 284
 20
-676
-413
+787
+524
 -1
 -1
-11.64
+15.0
 1
 10
 1
@@ -130,10 +132,10 @@ ticks
 30.0
 
 BUTTON
-53
-75
-117
-108
+66
+133
+169
+175
 setup
 setup
 NIL
