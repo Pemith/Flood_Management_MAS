@@ -95,7 +95,8 @@ to draw-shop
 end
 
 to create-person
-  create-persons 10[
+  create-persons 20[
+  setxy random-xcor random-ycor
   set shape "person"
   set color white
   ]
