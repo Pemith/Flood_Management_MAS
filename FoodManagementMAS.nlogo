@@ -1,4 +1,6 @@
 breed[persons person]
+breed[buildings building]
+
 persons-own[
   speed
   target
@@ -57,6 +59,7 @@ to setup
 
 
   set-patch-size 15
+  display-buildings-in-patches
 
   reset-ticks
 end
@@ -65,9 +68,23 @@ end
 to draw-building
   gis:set-drawing-color 135
   gis:draw building-dataset 1
-  create-person
+
+  create-persons 10[
+   setxy random-xcor random-ycor
+   set shape "person"
+   set color white
+  ]
+
+  ;ask patches with [pcolor = 135] [set building-dataset true]
 
 end
+
+to display-buildings-in-patches
+  ask patches [ set pcolor black ]
+  ask patches gis:intersecting building-dataset
+  [ set pcolor black ]
+end
+
 
 to draw-highway
   gis:set-drawing-color 15
@@ -94,13 +111,7 @@ to draw-shop
   gis:draw shop-dataset 1
 end
 
-to create-person
-  create-persons 20[
-  setxy random-xcor random-ycor
-  set shape "person"
-  set color white
-  ]
-end
+
 
 
 ;to setup-gis
