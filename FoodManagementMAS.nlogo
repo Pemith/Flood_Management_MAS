@@ -1,11 +1,3 @@
-breed[persons person]
-breed[buildings building]
-
-persons-own[
-  speed
-  target
-]
-
 extensions [ gis ]
 globals [ building-dataset
           highway-dataset
@@ -13,17 +5,15 @@ globals [ building-dataset
           natural-dataset
           place-dataset
           shop-dataset
-;          should-draw-country-labels
-;          should-draw-city-turtle-labels
          ]
 
-;breed [ country-labels country-label ]
-;breed [ cities city ]
-;cities-own [ name country population ]
-;breed [ citizens citizen ]
-;citizens-own [ cntry_name ]
-;
-;patches-own [ patch-population country-name elevation ]
+breed[persons person]
+breed[buildings building]
+
+persons-own[
+  speed
+  target
+]
 
 to setup
   clear-all
@@ -38,8 +28,6 @@ to setup
   set natural-dataset gis:load-dataset "data/Natural_polygons.shp"
   set place-dataset gis:load-dataset "data/place_points.shp"
   set shop-dataset gis:load-dataset "data/shop_points.shp"
-
-  ;set natural-dataset gis:load-dataset "data/world-elevation.asc"
 
   ; Set the world envelope to the union of all of our dataset's envelopes
   gis:set-world-envelope (gis:envelope-union-of (gis:envelope-of building-dataset)
@@ -60,6 +48,7 @@ to setup
 
   set-patch-size 15
   display-buildings-in-patches
+  create_persons
 
   reset-ticks
 end
@@ -68,23 +57,23 @@ end
 to draw-building
   gis:set-drawing-color 135
   gis:draw building-dataset 1
-
-  create-persons 10[
-   setxy random-xcor random-ycor
-   set shape "person"
-   set color white
-  ]
-
-  ;ask patches with [pcolor = 135] [set building-dataset true]
-
 end
 
 to display-buildings-in-patches
   ask patches [ set pcolor black ]
   ask patches gis:intersecting building-dataset
-  [ set pcolor black ]
+  [ set pcolor 0.3 ]
 end
 
+to create_persons
+
+  create-persons no_of_residents[
+   set shape "person"
+   set color white
+   move-to one-of patches with [pcolor = 0.3]
+  ]
+
+end
 
 to draw-highway
   gis:set-drawing-color 15
@@ -110,27 +99,6 @@ to draw-shop
   gis:set-drawing-color 25
   gis:draw shop-dataset 1
 end
-
-
-
-
-;to setup-gis
-;  show "Loading patches..."
-;  gis:apply-coverage countries-dataset "POP_CNTRY" population
-;  gis:apply-coverage countries-dataset "SQKM" area
-;  gis:apply-coverage countries-dataset "CNTRY_NAME" country-name
-;
-;  ask patches [
-;    ifelse (area > 0 and population > 0)
-;      [ ; Colour patch according to population density
-;        set population-density (population / area)
-;        set pcolor (scale-color red population-density 400 0) ]
-;
-;      [ ; Colour patch with no population blue
-;        set population-density 0
-;        set pcolor blue ]
-;  ]
-;end
 @#$#@#$#@
 GRAPHICS-WINDOW
 284
@@ -175,6 +143,21 @@ NIL
 NIL
 NIL
 1
+
+SLIDER
+68
+189
+240
+222
+no_of_residents
+no_of_residents
+0
+50
+50.0
+1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
