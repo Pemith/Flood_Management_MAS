@@ -162,11 +162,14 @@ HORIZONTAL
 @#$#@#$#@
 ## WHAT IS IT?
 
-(a general understanding of what the model is trying to show or explain)
+This project is a flood evacution system which will guide the residents of the flooded areas to safe location. 
 
 ## HOW IT WORKS
 
-(what rules the agents use to create the overall behavior of the model)
+The flood starts from the river in the map and it spreads to the residential areas. Then the residants who can be effected by the flood move to a safe location.
+
+The model assumes that there is no errosion. 
+
 
 ## HOW TO USE IT
 
