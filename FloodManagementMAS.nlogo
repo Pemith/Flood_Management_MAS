@@ -5,6 +5,7 @@ globals [ building-dataset
           natural-dataset
           place-dataset
           shop-dataset
+          floodedarea
          ]
 
 breed[persons person]
@@ -21,7 +22,6 @@ to setup
   clear-all
 
   set-default-shape turtles "square"
-
 
   ; Note that setting the coordinate system here is optional, as
   ; long as all of your datasets use the same coordinate system.
@@ -59,7 +59,7 @@ to setup
   display-naturals-in-patches
   create_persons
 
-
+  set floodedarea 0
 
   reset-ticks
 end
@@ -68,12 +68,7 @@ end
 to draw-building
   gis:set-drawing-color 135
   gis:draw building-dataset 1
-end
 
-to display-buildings-in-patches
-  ask patches [ set pcolor black ]
-  ask patches gis:intersecting building-dataset
-  [ set pcolor 0.3 ]
 end
 
 to create_persons
@@ -99,6 +94,7 @@ end
 to draw-natural
   gis:set-drawing-color 95
   gis:draw natural-dataset 1
+  gis:fill natural-dataset 95
 end
 
 to draw-place
@@ -111,43 +107,51 @@ to draw-shop
   gis:draw shop-dataset 1
 end
 
+
+
+to display-buildings-in-patches
+  ask patches [ set pcolor black ]
+  ask patches gis:intersecting building-dataset
+  [ set pcolor 0.3 ]
+end
+
+
 to display-naturals-in-patches
 
   ask patches gis:intersecting natural-dataset
-  [ set pcolor 102 ]
+  [ set pcolor 0.2 ]
 end
+
+
+;***************************
+
 
 to start
 
-  ask patches with [pcolor = 102]
+  ask patches with [pcolor = 0.2]
     [ flooding ]
 
   ;if not any? turtles
    ; [ stop ]
   ask floods
-    [ ask neighbors4 with [pcolor = black ]
+    [ ask neighbors4 with [pcolor = 0.3 ]
         [ flooding ]
-      set breed embers]
+      ]
 
-  fade-embers
   tick
 end
 
 to flooding
-sprout-floods 25
-  [ set color blue]
-  set pcolor 102
-  ask patches in-radius 1.5 [set pcolor 102]
+  let a 0
+sprout-floods floodedarea
+  [ set color 95]
+  set pcolor 95
+  set floodedarea floodedarea + 10
+  if count patches with [pcolor = 0.3 ] = 3 [stop]
 
-end
 
+  ;ask patches in-radius 1.5 [set pcolor 102]
 
-to fade-embers
-  ask embers
-    [ set color color - 102  ;; make red darker
-      if color < blue - 102     ;; are we almost at black?
-        [ set pcolor color
-          die ] ]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -164,15 +168,15 @@ GRAPHICS-WINDOW
 1
 1
 0
-1
-1
+0
+0
 1
 -16
 16
 -16
 16
-0
-0
+1
+1
 1
 ticks
 30.0
@@ -203,7 +207,7 @@ no_of_residents
 no_of_residents
 0
 50
-50.0
+48.0
 1
 1
 NIL
