@@ -9,6 +9,8 @@ globals [ building-dataset
 
 breed[persons person]
 breed[buildings building]
+breed[floods flood]
+breed [embers ember]
 
 persons-own[
   speed
@@ -17,6 +19,10 @@ persons-own[
 
 to setup
   clear-all
+
+  set-default-shape turtles "square"
+
+
   ; Note that setting the coordinate system here is optional, as
   ; long as all of your datasets use the same coordinate system.
   gis:load-coordinate-system (word "data/" "highway_lines.prj")
@@ -45,10 +51,15 @@ to setup
   draw-place
   draw-shop
 
+  ;make a flood polygon
+
 
   set-patch-size 15
   display-buildings-in-patches
+  display-naturals-in-patches
   create_persons
+
+
 
   reset-ticks
 end
@@ -98,6 +109,45 @@ end
 to draw-shop
   gis:set-drawing-color 25
   gis:draw shop-dataset 1
+end
+
+to display-naturals-in-patches
+
+  ask patches gis:intersecting natural-dataset
+  [ set pcolor 102 ]
+end
+
+to start
+
+  ask patches with [pcolor = 102]
+    [ flooding ]
+
+  ;if not any? turtles
+   ; [ stop ]
+  ask floods
+    [ ask neighbors4 with [pcolor = black ]
+        [ flooding ]
+      set breed embers]
+
+  fade-embers
+  tick
+end
+
+to flooding
+sprout-floods 25
+  [ set color blue]
+  set pcolor 102
+  ask patches in-radius 1.5 [set pcolor 102]
+
+end
+
+
+to fade-embers
+  ask embers
+    [ set color color - 102  ;; make red darker
+      if color < blue - 102     ;; are we almost at black?
+        [ set pcolor color
+          die ] ]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -158,6 +208,23 @@ no_of_residents
 1
 NIL
 HORIZONTAL
+
+BUTTON
+179
+133
+277
+175
+Start
+start
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
