@@ -6,6 +6,7 @@ globals [ building-dataset
           place-dataset
           shop-dataset
           floodedarea
+          counter
          ]
 
 breed[persons person]
@@ -60,6 +61,7 @@ to setup
   create_persons
 
   set floodedarea 0
+  set counter 0
 
   reset-ticks
 end
@@ -133,11 +135,13 @@ to start
 
   ;if not any? turtles
    ; [ stop ]
+
+  if counter < 3 [
   ask floods
     [ ask neighbors4 with [pcolor = 0.3 ]
         [ flooding ]
       ]
-
+    set counter counter + 1 ]
   tick
 end
 
