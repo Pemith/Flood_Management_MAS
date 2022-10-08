@@ -142,8 +142,7 @@ to start
         [ flooding ]
       ]
     set counter counter + 1
-    ;tick
-  ]
+]
   tick
 end
 
