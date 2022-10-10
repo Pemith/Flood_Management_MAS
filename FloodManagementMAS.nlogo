@@ -1,26 +1,28 @@
 extensions [ gis ]
+
 globals [ building-dataset
           highway-dataset
           landUse-dataset
           natural-dataset
           place-dataset
           shop-dataset
+          ;highwaypoint-dataset
           floodedarea
           counter
+          target
          ]
 
 breed[persons person]
-breed[buildings building]
+breed[safezones safezone]
 breed[floods flood]
-breed [embers ember]
 
 persons-own[
   speed
-  target
 ]
 
 to setup
   clear-all
+
 
   set-default-shape turtles "square"
 
@@ -35,6 +37,7 @@ to setup
   set natural-dataset gis:load-dataset "data/Natural_polygons.shp"
   set place-dataset gis:load-dataset "data/place_points.shp"
   set shop-dataset gis:load-dataset "data/shop_points.shp"
+  ;set highwaypoint-dataset gis:load-dataset "data/highway_points.shp"
 
   ; Set the world envelope to the union of all of our dataset's envelopes
   gis:set-world-envelope (gis:envelope-union-of (gis:envelope-of building-dataset)
@@ -42,7 +45,9 @@ to setup
                                                 (gis:envelope-of landUse-dataset)
                                                 (gis:envelope-of natural-dataset)
                                                 (gis:envelope-of place-dataset)
-                                                (gis:envelope-of shop-dataset))
+                                                (gis:envelope-of shop-dataset)
+                                                ;(gis:envelope-of highwaypoint-dataset)
+  )
 
   ; Draw the shapes of the places
   draw-building
@@ -52,12 +57,13 @@ to setup
   draw-place
   draw-shop
 
-  ;make a flood polygon
-
 
   set-patch-size 15
+
+
   display-buildings-in-patches
   display-naturals-in-patches
+  create_safezones
   create_persons
 
   set floodedarea 0
@@ -78,7 +84,22 @@ to create_persons
   create-persons no_of_residents[
    set shape "person"
    set color white
+   set speed 5
+   set heading random 360
+   set target one-of safezones
+   face target
    move-to one-of patches with [pcolor = 0.3]
+  ]
+
+end
+
+to create_safezones
+
+  create-safezones 1[
+   set shape "circle 2"
+   set color yellow
+   set size 2
+   setxy 0 13
   ]
 
 end
@@ -112,7 +133,7 @@ end
 
 
 to display-buildings-in-patches
-  ask patches [ set pcolor black ]
+  ;ask patches [ set pcolor black ]
   ask patches gis:intersecting building-dataset
   [ set pcolor 0.3 ]
 end
@@ -125,16 +146,12 @@ to display-naturals-in-patches
 end
 
 
-;***************************
-
 
 to start
 
   ask patches with [pcolor = 0.2]
     [ flooding ]
 
-  ;if not any? turtles
-   ; [ stop ]
 
   if counter < 3 [
   ask floods
@@ -142,21 +159,35 @@ to start
         [ flooding ]
       ]
     set counter counter + 1
-    ;tick
+
   ]
+
+
+  ask persons
+  [
+    if distance target = 0
+    [
+      set target one-of safezones
+      face target
+    ]
+
+    ifelse distance target < 0
+    [move-to target]
+    [fd speed]
+
+  ]
+
   tick
+
 end
 
+
 to flooding
-  let a 0
+
 sprout-floods floodedarea
   [ set color 95]
   set pcolor 95
   set floodedarea floodedarea + 10
-  if count patches with [pcolor = 0.3 ] = 3 [stop]
-
-
-  ;ask patches in-radius 1.5 [set pcolor 102]
 
 end
 @#$#@#$#@
@@ -192,7 +223,7 @@ BUTTON
 133
 169
 175
-setup
+Setup
 setup
 NIL
 1
@@ -239,42 +270,51 @@ NIL
 @#$#@#$#@
 ## WHAT IS IT?
 
-This project is a flood evacution system which will guide the residents of the flooded areas to safe location. 
+This project is a flood evacution system which will guide the residents to a safe location when flooding. 
 
 ## HOW IT WORKS
 
-The flood starts from the river in the map and it spreads to the residential areas. Then the residants who can be effected by the flood move to a safe location.
+The flood starts from the rivers in the map and it spreads to the residential areas. 
+
+Then the residants who can be effected by the flood will move to a safe location.
 
 The model assumes that there is no errosion. 
 
 
 ## HOW TO USE IT
 
-(how to use the model, including a description of each of the items in the Interface tab)
+Click the Setup button to set up the rivers, residential area, and people.
+
+Cick the Start button to start the simulation.
+
+The no_of_residents slider controls the population of people in the residential area. (Note: Changes in the no_of_residents slider do not take effect until the next SETUP.)
+
 
 ## THINGS TO NOTICE
 
-(suggested things for the user to notice while running the model)
+??????(suggested things for the user to notice while running the model)
 
 ## THINGS TO TRY
 
-(suggested things for the user to try to do (move sliders, switches, etc.) with the model)
+The no_of_residents in residential areas can be set from 0 to 50. 
+
+Try chnaging the no_of_residents to see the chnage in the no of people.
 
 ## EXTENDING THE MODEL
 
-(suggested things to add or change in the Code tab to make the model more complicated, detailed, accurate, etc.)
+????(suggested things to add or change in the Code tab to make the model more complicated, detailed, accurate, etc.)
 
 ## NETLOGO FEATURES
 
-(interesting or unusual features of NetLogo that the model uses, particularly in the Code tab; or where workarounds were needed for missing features)
+????(interesting or unusual features of NetLogo that the model uses, particularly in the Code tab; or where workarounds were needed for missing features)
 
 ## RELATED MODELS
 
-(models in the NetLogo Models Library and elsewhere which are of related interest)
+????(models in the NetLogo Models Library and elsewhere which are of related interest)
 
 ## CREDITS AND REFERENCES
 
-(a reference to the model's URL on the web if it has one, as well as any other necessary credits, citations, and links)
+????(a reference to the model's URL on the web if it has one, as well as any other necessary credits, citations, and links)
 @#$#@#$#@
 default
 true
