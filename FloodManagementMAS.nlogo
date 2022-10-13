@@ -10,11 +10,14 @@ globals [ building-dataset
           floodedarea
           counter
           target
+          zone
          ]
 
 breed[persons person]
 breed[safezones safezone]
 breed[floods flood]
+
+
 
 persons-own[
   speed
@@ -59,7 +62,7 @@ to setup
 
 
   set-patch-size 15
-
+  ;set zone = (setxy 0,13)
 
   display-buildings-in-patches
   display-naturals-in-patches
@@ -98,7 +101,7 @@ to create_safezones
   create-safezones 1[
    set shape "circle 2"
    set color yellow
-   set size 2
+   set size 3
    setxy 0 13
   ]
 
@@ -165,15 +168,17 @@ to start
 
   ask persons
   [
-    if distance target = 0
-    [
-      set target one-of safezones
-      face target
-    ]
+;    if distance target = 0
+;    [
+;      set target one-of safezones
+;      face target
+;    ]
 
-    ifelse distance target < 0
-    [move-to target]
-    [fd speed]
+    ;ifelse distance target < 2
+    set heading towards one-of safezones
+    fd speed
+    ;die
+    ;[stop]
 
   ]
 
@@ -244,7 +249,7 @@ no_of_residents
 no_of_residents
 0
 50
-48.0
+47.0
 1
 1
 NIL
